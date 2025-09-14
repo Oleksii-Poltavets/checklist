@@ -1,8 +1,35 @@
+"use client"
+
+import { useState } from "react";
 import Footer from "./components/footer/Footer";
 import GoalA from "./components/Main/GoalA";
 import Habbits from "./components/Main/Habbits";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // State for summary
+  const [showSummary, setShowSummary] = useState(false);
+
+  // State for habbits and goalA (example, adapt to your logic)
+  const [habbitIds, setHabbitIds] = useState([0, 1, 2, 3]);
+  const [habbitChecks, setHabbitChecks] = useState<{ [key: number]: boolean[] }>(
+    () => Object.fromEntries([0, 1, 2, 3].map(id => [id, Array(7).fill(false)]))
+  );
+  const [goalAWeekChecked, setGoalAWeekChecked] = useState(false);
+  const [goalADayChecks, setGoalADayChecks] = useState(Array(7).fill(false));
+
+  // Calculations
+  const totalChecked = Object.values(habbitChecks).reduce((acc, arr) => acc + arr.filter(Boolean).length, 0);
+  const totalBoxes = habbitIds.length * 7;
+  const habbitsScore = `${totalChecked}/${totalBoxes} (${totalBoxes > 0 ? Math.round((totalChecked / totalBoxes) * 100) : 0}%)`;
+  const habbitsPenalty = habbitIds.reduce((total, id) => {
+    const checked = habbitChecks[id]?.filter(Boolean).length || 0;
+    const penalty = 7 - checked - 2;
+    return total + (penalty < 0 ? 0 : penalty);
+  }, 0);
+  const goalAWeekPenalty = goalAWeekChecked ? 0 : 1;
+  const goalADayPenalty = Math.max(0, 7 - goalADayChecks.filter(Boolean).length - 2);
+  const goalAPenalty = goalAWeekPenalty + goalADayPenalty;
+
   const personOnDuty = "John Doe";
   const weekStart = "2025-09-08";
   const weekEnd = "2025-09-14";
@@ -16,15 +43,27 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Week: {weekStart} – {weekEnd}
         </h2>
         <div className="w-full flex flex-col lg:flex-row gap-8 items-start justify-center">
-          <GoalA />
-          <Habbits />
+          <GoalA
+            weekChecked={goalAWeekChecked}
+            setWeekChecked={setGoalAWeekChecked}
+            dayChecks={goalADayChecks}
+            setDayChecks={setGoalADayChecks}
+          />
+          <Habbits
+            habbitIds={habbitIds}
+            setHabbitIds={setHabbitIds}
+            checks={habbitChecks}
+            setChecks={setHabbitChecks}
+          />
         </div>
         {children}
       </main>
       <Footer
-        habbitsScore="12/28 (43%)"
-        habbitsPenalty={5}
-        goalAPenalty={3}
+        habbitsScore={habbitsScore}
+        habbitsPenalty={habbitsPenalty}
+        goalAPenalty={goalAPenalty}
+        showSummary={showSummary}
+        onShowSummary={() => setShowSummary(true)}
       />
     </>
   );

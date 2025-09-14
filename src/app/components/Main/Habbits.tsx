@@ -1,6 +1,14 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+interface HabbitsProps {
+    habbitIds: number[];
+    setHabbitIds: React.Dispatch<React.SetStateAction<number[]>>;
+    checks: { [key: number]: boolean[] };
+    setChecks: React.Dispatch<React.SetStateAction<{ [key: number]: boolean[] }>>;
+}
+
 
 const days = [
     { abbr: "Mon" },
@@ -12,31 +20,30 @@ const days = [
     { abbr: "Sun" },
 ];
 
-export default function Habbits() {
-    const [habbitIds, setHabbitIds] = useState([0, 1, 2, 3]);
+export default function Habbits({
+    habbitIds,
+    setHabbitIds,
+    checks,
+    setChecks,
+}: HabbitsProps) {
+
     const [modalOpen, setModalOpen] = useState(false);
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [editMode, setEditMode] = useState(false);
 
-    // Track checkboxes for each habbit
-    const [checks, setChecks] = useState<{ [key: number]: boolean[] }>(() =>
-        Object.fromEntries(habbitIds.map(id => [id, Array(7).fill(false)]))
-    );
-
     // Update checks when habbitIds changes (add new habbit)
-    React.useEffect(() => {
+    useEffect(() => {
         setChecks(prev => {
             const next = { ...prev };
             habbitIds.forEach(id => {
                 if (!next[id]) next[id] = Array(7).fill(false);
             });
-            // Remove deleted habbits
             Object.keys(next).forEach(id => {
                 if (!habbitIds.includes(Number(id))) delete next[Number(id)];
             });
             return next;
         });
-    }, [habbitIds]);
+    }, [habbitIds, setChecks]);
 
     const handleCheck = (habbitId: number, dayIdx: number) => {
         setChecks(prev => ({
@@ -46,11 +53,11 @@ export default function Habbits() {
     };
 
     const addHabbit = () => {
-        setHabbitIds((prev) => [...prev, prev.length ? prev[prev.length - 1] + 1 : 0]);
+        setHabbitIds(prev => [...prev, prev.length ? prev[prev.length - 1] + 1 : 0]);
     };
 
     const removeHabbit = (id: number) => {
-        setHabbitIds((prev) => prev.filter((hid) => hid !== id));
+        setHabbitIds(prev => prev.filter(hid => hid !== id));
     };
 
     const handleDelete = (id: number) => {
@@ -70,6 +77,7 @@ export default function Habbits() {
         setModalOpen(false);
         setDeleteId(null);
     };
+
 
     return (
         <section className="relative w-full max-w-xl mb-8 bg-white dark:bg-gray-800 rounded-xl shadow p-6">

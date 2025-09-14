@@ -1,26 +1,27 @@
 "use client"
 
-import React, { useState } from "react";
+import React from "react";
 
 export default function Footer({
     habbitsScore,
     habbitsPenalty,
     goalAPenalty,
+    showSummary,
+    onShowSummary,
 }: {
     habbitsScore: string;
     habbitsPenalty: number;
     goalAPenalty: number;
+    showSummary: boolean;
+    onShowSummary: () => void;
 }) {
-    const [showSummary, setShowSummary] = useState(false);
-
     return (
-        <footer className="w-full h-16 bg-gray-100 dark:bg-gray-900 shadow fixed bottom-0 left-0 z-20">
+        <footer className="w-full h-16 bg-gray-100 dark:bg-gray-900 shadow fixed bottom-0 left-0 z-20 md:static md:shadow-none">
             <div className="container mx-auto h-full flex items-center justify-between px-6">
-                {/* Left side: Week summary or results */}
                 <div>
                     {!showSummary ? (
                         <button
-                            onClick={() => setShowSummary(true)}
+                            onClick={onShowSummary}
                             className="px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all duration-300"
                         >
                             Week summary
@@ -39,7 +40,6 @@ export default function Footer({
                         </div>
                     )}
                 </div>
-                {/* Right side: Nav menu, visible only after summary */}
                 <nav
                     className={`flex gap-4 transition-all duration-300 ${showSummary
                         ? "opacity-100 translate-y-0 pointer-events-auto"
