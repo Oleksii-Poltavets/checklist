@@ -50,7 +50,6 @@ export default function GoalA({
                         checked={weekChecked}
                         onChange={() => setWeekChecked(v => !v)}
                     />
-                    <span className="text-sm text-gray-700 dark:text-gray-200">Done</span>
                 </label>
             </div>
 
