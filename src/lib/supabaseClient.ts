@@ -9,6 +9,7 @@ export function createSupabaseClientWithToken(token: string) {
             fetch: (url, options = {}) => {
                 options.headers = {
                     ...options.headers,
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                     apikey: supabaseAnonKey,
                 };

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { createSupabaseClientWithToken } from "./supabaseClient";
 
 export async function saveUserProgress({
@@ -20,12 +21,13 @@ export async function saveUserProgress({
     const supabase = createSupabaseClientWithToken(token);
 
     const { error } = await supabase.rpc("save_user_progress", {
-        goala_day_checks: goalaDayChecks,
+        goala_day_checks: JSON.stringify(goalaDayChecks),
         goala_week_checked: goalaWeekChecked,
-        habbit_checks: habbitChecks,
-        habbit_ids: habbitIds,
-        user_id: userId,
-        week_range: weekRange
+        habbit_checks: JSON.stringify(habbitChecks),
+        habbit_ids: JSON.stringify(habbitIds),
+        user_id_arg: uuidv4(), // always a valid uuid
+        clerk_user_id_arg: userId, // Clerk user ID string
+        week_range_arg: weekRange
     });
 
     if (error) {
