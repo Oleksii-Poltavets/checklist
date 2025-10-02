@@ -5,10 +5,11 @@ import React, { useEffect, useState } from "react";
 interface HabbitsProps {
     habbitIds: number[];
     setHabbitIds: React.Dispatch<React.SetStateAction<number[]>>;
+    habbitNames: string[];
+    setHabbitNames: React.Dispatch<React.SetStateAction<string[]>>;
     checks: { [key: number]: boolean[] };
     setChecks: React.Dispatch<React.SetStateAction<{ [key: number]: boolean[] }>>;
 }
-
 
 const days = [
     { abbr: "Mon" },
@@ -23,6 +24,8 @@ const days = [
 export default function Habbits({
     habbitIds,
     setHabbitIds,
+    habbitNames,
+    setHabbitNames,
     checks,
     setChecks,
 }: HabbitsProps) {
@@ -31,7 +34,7 @@ export default function Habbits({
     const [deleteId, setDeleteId] = useState<number | null>(null);
     const [editMode, setEditMode] = useState(false);
 
-    // Update checks when habbitIds changes (add new habbit)
+    // Update checks and names when habbitIds changes (add/remove habbit)
     useEffect(() => {
         setChecks(prev => {
             const next = { ...prev };
@@ -43,13 +46,28 @@ export default function Habbits({
             });
             return next;
         });
-    }, [habbitIds, setChecks]);
+
+        setHabbitNames(prev => {
+            if (habbitIds.length > prev.length) {
+                // Add empty names for new habbits
+                return [...prev, ...Array(habbitIds.length - prev.length).fill("")];
+            } else if (habbitIds.length < prev.length) {
+                // Remove names for deleted habbits
+                return prev.slice(0, habbitIds.length);
+            }
+            return prev;
+        });
+    }, [habbitIds, setChecks, setHabbitNames]);
 
     const handleCheck = (habbitId: number, dayIdx: number) => {
         setChecks(prev => ({
             ...prev,
             [habbitId]: prev[habbitId].map((val, idx) => idx === dayIdx ? !val : val)
         }));
+    };
+
+    const handleNameChange = (idx: number, value: string) => {
+        setHabbitNames(prev => prev.map((v, i) => i === idx ? value : v));
     };
 
     const addHabbit = () => {
@@ -77,7 +95,6 @@ export default function Habbits({
         setModalOpen(false);
         setDeleteId(null);
     };
-
 
     return (
         <section className="relative w-full max-w-xl mb-8 bg-white dark:bg-gray-800 rounded-xl shadow p-6">
@@ -113,7 +130,10 @@ export default function Habbits({
                     <input
                         type="text"
                         placeholder={`Habbit ${idx + 1}`}
+                        value={habbitNames[idx] || ""}
+                        onChange={e => handleNameChange(idx, e.target.value)}
                         className="flex-1 px-2 py-1 rounded border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+                        disabled={!editMode}
                     />
                     <div className="flex gap-2 md:gap-1 w-full md:w-auto justify-between">
                         {days.map((day, dayIdx) => (
@@ -168,20 +188,6 @@ export default function Habbits({
                         }
                     </span>
                 </span>
-                {/* <span className="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-900 text-lg font-semibold text-gray-800 dark:text-gray-100 shadow">
-                    Penalty:{" "}
-                    <span className="text-red-500 font-bold">
-                        {
-                            (() => {
-                                return habbitIds.reduce((total, id) => {
-                                    const checked = checks[id]?.filter(Boolean).length || 0;
-                                    const penalty = 7 - checked - 2;
-                                    return total + (penalty < 0 ? 0 : penalty);
-                                }, 0);
-                            })()
-                        }
-                    </span>
-                </span> */}
             </div>
             {editMode && (
                 <button

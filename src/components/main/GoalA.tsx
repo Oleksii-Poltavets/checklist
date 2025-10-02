@@ -1,13 +1,16 @@
 'use client'
-import React from "react";
+import React, { useEffect } from "react";
 
 interface GoalAProps {
     weekChecked: boolean;
     setWeekChecked: React.Dispatch<React.SetStateAction<boolean>>;
     dayChecks: boolean[];
     setDayChecks: React.Dispatch<React.SetStateAction<boolean[]>>;
+    weekGoalText: string;
+    setWeekGoalText: React.Dispatch<React.SetStateAction<string>>;
+    dayGoalTexts: string[];
+    setDayGoalTexts: React.Dispatch<React.SetStateAction<string[]>>;
 }
-
 
 const days = [
     { abbr: "Mon", full: "Monday" },
@@ -24,7 +27,21 @@ export default function GoalA({
     setWeekChecked,
     dayChecks,
     setDayChecks,
+    weekGoalText,
+    setWeekGoalText,
+    dayGoalTexts,
+    setDayGoalTexts,
 }: GoalAProps) {
+
+    useEffect(() => {
+        // Debug: log props whenever they change
+        console.log("GoalA props:", {
+            weekChecked,
+            dayChecks,
+            weekGoalText,
+            dayGoalTexts
+        });
+    }, [weekChecked, dayChecks, weekGoalText, dayGoalTexts]);
 
     const handleCheck = (idx: number) => {
         setDayChecks(prev => prev.map((val, i) => i === idx ? !val : val));
@@ -41,6 +58,8 @@ export default function GoalA({
                 <input
                     type="text"
                     placeholder="Goal for the week"
+                    value={weekGoalText}
+                    onChange={e => setWeekGoalText(e.target.value)}
                     className="flex-1 px-2 py-1 rounded border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100"
                 />
                 <label className="flex items-center gap-2">
@@ -48,7 +67,7 @@ export default function GoalA({
                         type="checkbox"
                         className="w-5 h-5 accent-blue-500"
                         checked={weekChecked}
-                        onChange={() => setWeekChecked(v => !v)}
+                        onChange={e => setWeekChecked(e.target.checked)}
                     />
                 </label>
             </div>
@@ -64,13 +83,15 @@ export default function GoalA({
                         <input
                             type="text"
                             placeholder={`Goal for ${day.full}`}
+                            value={dayGoalTexts[idx]}
+                            onChange={e => setDayGoalTexts(prev => prev.map((v, i) => i === idx ? e.target.value : v))}
                             className="flex-1 px-2 py-1 rounded dark:border-gray-900 text-gray-900 dark:text-gray-100"
                         />
                         <input
                             type="checkbox"
                             className="w-5 h-5 accent-blue-500"
                             checked={dayChecks[idx]}
-                            onChange={() => handleCheck(idx)}
+                            onChange={e => setDayChecks(prev => prev.map((v, i) => i === idx ? e.target.checked : v))}
                         />
                     </div>
                 ))}

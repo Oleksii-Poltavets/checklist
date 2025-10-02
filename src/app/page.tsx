@@ -1,8 +1,7 @@
 "use client";
 
 import { saveUserProgress } from "@/lib/saveProgress";
-
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Footer from "../components/footer/Footer";
 import GoalA from "../components/main/GoalA";
 import Habbits from "../components/main/Habbits";
@@ -10,15 +9,19 @@ import Header from "../components/header/Header";
 import MainWithoutAuth from "../components/withoutAuth/MainWithoutAuth";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { useAuth } from "@clerk/nextjs";
+import { fetchUserProgress } from "@/lib/fetchUserProgress";
 
 export default function ChecklistPage({ children }: { children: React.ReactNode }) {
   const [showSummary, setShowSummary] = useState(false);
-  const [habbitIds, setHabbitIds] = useState([0, 1, 2, 3]);
+  const [habbitIds, setHabbitIds] = useState<number[]>([0, 1, 2, 3]);
+  const [habbitNames, setHabbitNames] = useState<string[]>(["", "", "", ""]);
   const [habbitChecks, setHabbitChecks] = useState<{ [key: number]: boolean[] }>(
     () => Object.fromEntries([0, 1, 2, 3].map(id => [id, Array(7).fill(false)]))
   );
   const [goalaWeekChecked, setGoalaWeekChecked] = useState(false);
   const [goalaDayChecks, setGoalaDayChecks] = useState(Array(7).fill(false));
+  const [weekGoalText, setWeekGoalText] = useState("");
+  const [dayGoalTexts, setDayGoalTexts] = useState(Array(7).fill(""));
 
   const { getToken, userId } = useAuth();
 
@@ -40,6 +43,55 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
     return `${formatDate(monday)} - ${formatDate(sunday)}`;
   }, []);
 
+  useEffect(() => {
+    async function loadProgress() {
+      const token = await getToken({ template: "supabase" });
+      if (!token || !userId) return;
+      let progress = await fetchUserProgress(token, userId, getCurrentWeekRange());
+
+      if (Array.isArray(progress)) progress = progress[0];
+
+      if (progress) {
+        // Dynamic habbit count
+        const ids = Array.isArray(progress.habbit_ids) ? progress.habbit_ids : [0, 1, 2, 3];
+        setHabbitIds(ids);
+
+        setHabbitNames(
+          Array.isArray(progress.habbit_names)
+            ? [...progress.habbit_names, ...Array(ids.length - progress.habbit_names.length).fill("")]
+              .slice(0, ids.length)
+            : Array(ids.length).fill("")
+        );
+
+        setHabbitChecks(() => {
+          const checks: { [key: number]: boolean[] } = {};
+          ids.forEach((id: number, idx: number) => {
+            const arr = progress.habbit_checks && Array.isArray(progress.habbit_checks[id])
+              ? [...progress.habbit_checks[id], ...Array(7 - progress.habbit_checks[id].length).fill(false)].slice(0, 7)
+              : Array(7).fill(false);
+            checks[id] = arr;
+          });
+          return checks;
+        });
+
+        setGoalaWeekChecked(progress.goala_week_checked ?? false);
+        setGoalaDayChecks(
+          Array.isArray(progress.goala_day_checks)
+            ? [...progress.goala_day_checks, ...Array(7 - progress.goala_day_checks.length).fill(false)].slice(0, 7)
+            : Array(7).fill(false)
+        );
+        setWeekGoalText(progress.week_goal_text ?? "");
+        setDayGoalTexts(
+          Array.isArray(progress.day_goal_texts)
+            ? [...progress.day_goal_texts, ...Array(7 - progress.day_goal_texts.length).fill("")].slice(0, 7)
+            : Array(7).fill("")
+        );
+      }
+    }
+    loadProgress();
+  }, [userId, getCurrentWeekRange()]);
+
+  // Score and penalty calculations
   const habbitsScore = (() => {
     const totalChecked = Object.values(habbitChecks).reduce((acc, arr) => acc + arr.filter(Boolean).length, 0);
     const totalBoxes = habbitIds.length * 7;
@@ -78,10 +130,16 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
               setWeekChecked={setGoalaWeekChecked}
               dayChecks={goalaDayChecks}
               setDayChecks={setGoalaDayChecks}
+              weekGoalText={weekGoalText}
+              setWeekGoalText={setWeekGoalText}
+              dayGoalTexts={dayGoalTexts}
+              setDayGoalTexts={setDayGoalTexts}
             />
             <Habbits
               habbitIds={habbitIds}
               setHabbitIds={setHabbitIds}
+              habbitNames={habbitNames}
+              setHabbitNames={setHabbitNames}
               checks={habbitChecks}
               setChecks={setHabbitChecks}
             />
@@ -90,17 +148,18 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
           <button
             onClick={async () => {
               const token = await getToken({ template: "supabase" });
-              console.log(token);
               if (!token || !userId) return;
-
               await saveUserProgress({
                 token,
                 userId,
                 weekRange: getCurrentWeekRange(),
                 habbitIds,
                 habbitChecks,
+                habbitNames,
                 goalaWeekChecked,
                 goalaDayChecks,
+                weekGoalText,
+                dayGoalTexts,
               });
             }}
             className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
