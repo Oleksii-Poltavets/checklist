@@ -21,15 +21,15 @@ export default function Footer({
     useEffect(() => {
         const updateTimer = () => {
             const now = new Date();
-            const nextSunday = new Date();
+            const nextMonday = new Date();
 
-            // Set to next Sunday at 00:00
-            const dayOfWeek = now.getDay();
-            const daysUntilSunday = (7 - dayOfWeek) % 7 || 7;
-            nextSunday.setDate(now.getDate() + daysUntilSunday);
-            nextSunday.setHours(0, 0, 0, 0);
+            // Set to next Monday at 00:00
+            const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
+            nextMonday.setDate(now.getDate() + daysUntilMonday);
+            nextMonday.setHours(0, 0, 0, 0);
 
-            const diff = nextSunday.getTime() - now.getTime();
+            const diff = nextMonday.getTime() - now.getTime();
             const totalSeconds = Math.floor(diff / 1000);
 
             const days = Math.floor(totalSeconds / (3600 * 24));
@@ -50,25 +50,25 @@ export default function Footer({
         return () => clearInterval(interval);
     }, []);
     return (
-        <footer className="w-full h-16 bg-gray-100 dark:bg-gray-900 shadow fixed bottom-0 left-0 z-20 md:static md:shadow-none">
+        <footer className="w-full h-16 bg-slate-800 border-t border-slate-700 shadow-lg fixed bottom-0 left-0 z-20 md:static md:shadow-none">
             <SignedIn>
                 <div className="container mx-auto h-full flex items-center justify-between px-6">
                     <div>
                         {!showSummary ? (
                             <button
                                 onClick={onShowSummary}
-                                className="px-4 py-2 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all duration-300"
+                                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
                             >
                                 Week summary
                             </button>
                         ) : (
                             <div className="flex flex-col gap-1 transition-all duration-300">
-                                <span className="text-gray-800 dark:text-gray-100 font-semibold">
-                                    Habbits score: <span className="text-[#FFFF00]">{habbitsScore}</span>
+                                <span className="text-slate-100 font-semibold">
+                                    Habbits score: <span className="text-emerald-400">{habbitsScore}</span>
                                 </span>
-                                <span className="text-gray-800 dark:text-gray-100 font-semibold">
+                                <span className="text-slate-100 font-semibold">
                                     Penalty total:{" "}
-                                    <span className="text-red-500">
+                                    <span className="text-red-400">
                                         {goalAPenalty + habbitsPenalty}
                                     </span>
                                 </span>
@@ -81,10 +81,10 @@ export default function Footer({
                             : "opacity-0 translate-y-2 pointer-events-none"
                             }`}
                     >
-                        <button className="px-4 py-2 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 transition-all duration-300">
+                        <button className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25">
                             Send the result
                         </button>
-                        <button className="px-4 py-2 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition-all duration-300">
+                        <button className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/25">
                             Pay penalty
                         </button>
                     </nav>
@@ -93,8 +93,8 @@ export default function Footer({
             </SignedIn>
             <SignedOut>
                 <div className="container mx-auto h-full flex items-center justify-center px-6">
-                    <div className="text-xl md:text-2xl font-semibold text-blue-600 dark:text-blue-400">
-                        ⏳ Next week starts in: <span className="ml-2">{timeLeft}</span>
+                    <div className="text-xl md:text-2xl font-semibold text-emerald-400">
+                        ⏳ Next week starts in: <span className="ml-2 text-slate-100">{timeLeft}</span>
                     </div>
                 </div>
             </SignedOut>

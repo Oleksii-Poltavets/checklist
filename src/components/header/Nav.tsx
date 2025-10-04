@@ -34,9 +34,9 @@ export default function NavMenu() {
                     <>
                         <li>
                             <SignInButton mode="modal">
-                                <div className="flex items-center gap-1 text-gray-800 dark:text-gray-100 hover:underline cursor-pointer">
+                                <div className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer">
                                     {/* User icon */}
-                                    <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
                                     </svg>
                                     Login
@@ -45,9 +45,9 @@ export default function NavMenu() {
                         </li>
                         <li>
                             <SignUpButton mode="modal">
-                                <div className="flex items-center gap-1 text-gray-800 dark:text-gray-100 hover:underline cursor-pointer">
+                                <div className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer">
                                     {/* Pencil icon */}
-                                    <svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9a1 1 0 00-.263.465l-1.414 5.657a1 1 0 001.213 1.213l5.657-1.414a1 1 0 00.465-.263l9.9-9.9a2 2 0 000-2.828l-2.83-2.83zM15 7l-2-2 2-2 2 2-2 2z" />
                                     </svg>
                                     Register
@@ -63,10 +63,10 @@ export default function NavMenu() {
                                 href="https://meet.google.com/new"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center hover:underline transition"
+                                className="inline-flex items-center text-slate-300 hover:text-emerald-400 transition-colors"
                             >
                                 <svg
-                                    className="w-5 h-5 mr-2"
+                                    className="w-5 h-5 mr-2 text-emerald-500"
                                     fill="currentColor"
                                     viewBox="0 0 20 20"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -85,30 +85,30 @@ export default function NavMenu() {
             </ul>
             {/* Mobile menu button */}
             <button
-                className="md:hidden ml-2 p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-800"
+                className="md:hidden ml-2 p-2 rounded hover:bg-slate-700 transition-colors"
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label="Open menu"
             >
-                <svg className="w-6 h-6 text-gray-800 dark:text-gray-100" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
             {/* Mobile dropdown */}
             {menuOpen && (
-                <ul className="absolute right-6 top-16 bg-white dark:bg-gray-900 shadow rounded-md flex flex-col gap-2 p-4 md:hidden z-50">
+                <ul className="absolute right-6 top-16 bg-slate-800 border border-slate-700 shadow-xl rounded-md flex flex-col gap-2 p-4 md:hidden z-50">
                     <SignedOut>
                         <>
                             <li>
-                                <a href="/login" className="flex items-center gap-1 text-gray-800 dark:text-gray-100 hover:underline">
-                                    <svg className="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                <a href="/login" className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors">
+                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
                                     </svg>
                                     Login
                                 </a>
                             </li>
                             <li>
-                                <a href="/register" className="flex items-center gap-1 text-gray-800 dark:text-gray-100 hover:underline">
-                                    <svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+                                <a href="/register" className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors">
+                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9a1 1 0 00-.263.465l-1.414 5.657a1 1 0 001.213 1.213l5.657-1.414a1 1 0 00.465-.263l9.9-9.9a2 2 0 000-2.828l-2.83-2.83zM15 7l-2-2 2-2 2 2-2 2z" />
                                     </svg>
                                     Register
@@ -119,8 +119,8 @@ export default function NavMenu() {
                     <SignedIn>
                         <>
                             <li>
-                                <a href="/meet/new" className="flex items-center gap-1 text-gray-800 dark:text-gray-100 hover:underline">
-                                    <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <a href="/meet/new" className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors">
+                                    <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" />
                                         <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" />
                                     </svg>
@@ -128,7 +128,7 @@ export default function NavMenu() {
                                 </a>
                             </li>
                             <li>
-                                <button className="flex items-center gap-1 text-gray-800 dark:text-gray-100 hover:underline">
+                                <button className="flex items-center gap-1 text-slate-300 hover:text-red-400 transition-colors">
                                     <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                         <path d="M17 16l4-4m0 0l-4-4m4 4H7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
                                         <path d="M3 21V3a2 2 0 012-2h7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />

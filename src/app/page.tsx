@@ -46,13 +46,15 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Optionally check for unsaved changes here
-      e.preventDefault();
-      e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+      // Only show popup if user is logged in (has userId)
+      if (userId) {
+        e.preventDefault();
+        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+      }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     async function loadProgress() {
@@ -132,12 +134,12 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
         <MainWithoutAuth />
       </SignedOut>
       <SignedIn>
-        <main className="flex-1 w-full flex flex-col items-center justify-start p-6 pb-0 bg-white dark:bg-gray-950">
-          <h1 className="text-3xl font-bold mb-2">
-            On duty: <span className="text-blue-600">{personOnDuty}</span>
+        <main className="flex-1 w-full flex flex-col items-center justify-start p-6 pb-0 bg-slate-900 text-slate-100">
+          <h1 className="text-3xl font-bold mb-2 text-center">
+            On duty: <span className="text-emerald-400">{personOnDuty}</span>
           </h1>
-          <h2 className="text-xl font-semibold mb-6">
-            Week: <span>{getCurrentWeekRange()}</span>
+          <h2 className="text-xl font-semibold mb-6 text-slate-300">
+            Week: <span className="text-slate-100">{getCurrentWeekRange()}</span>
           </h2>
           <div className="w-full flex flex-col lg:flex-row gap-8 items-start justify-center">
             <GoalA
@@ -160,39 +162,41 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
             />
           </div>
           {children}
-          <button
-            onClick={async () => {
-              const token = await getToken({ template: "supabase" });
-              if (!token || !userId) return;
-              await saveUserProgress({
-                token,
-                userId,
-                weekRange: getCurrentWeekRange(),
-                habbitIds,
-                habbitChecks,
-                habbitNames,
-                goalaWeekChecked,
-                goalaDayChecks,
-                weekGoalText,
-                dayGoalTexts,
-              });
-            }}
-            className="mt-4 px-4 py-2 mb-4 bg-blue-600 text-white rounded"
-          >
-            Save Progress
-          </button>
-          <button
-            onClick={() => setResetModalOpen(true)}
-            className="mt-4 px-4 py-2 mb-4 bg-red-600 text-white rounded ml-2"
-          >
-            Reset
-          </button>
-          <button
-            onClick={() => setNewWeekModalOpen(true)}
-            className="mt-4 px-4 py-2 mb-4 bg-yellow-500 text-white rounded ml-2"
-          >
-            New Week
-          </button>
+          <div className="flex gap-3 mt-6 mb-4">
+            <button
+              onClick={async () => {
+                const token = await getToken({ template: "supabase" });
+                if (!token || !userId) return;
+                await saveUserProgress({
+                  token,
+                  userId,
+                  weekRange: getCurrentWeekRange(),
+                  habbitIds,
+                  habbitChecks,
+                  habbitNames,
+                  goalaWeekChecked,
+                  goalaDayChecks,
+                  weekGoalText,
+                  dayGoalTexts,
+                });
+              }}
+              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
+            >
+              Save Progress
+            </button>
+            <button
+              onClick={() => setNewWeekModalOpen(true)}
+              className="px-6 py-2.5 bg-slate-600 hover:bg-slate-700 active:bg-slate-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-slate-500/25"
+            >
+              New Week
+            </button>
+            <button
+              onClick={() => setResetModalOpen(true)}
+              className="px-6 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-red-500/25"
+            >
+              Reset
+            </button>
+          </div>
           <CustomModal
             open={newWeekModalOpen}
             title="Start New Week?"

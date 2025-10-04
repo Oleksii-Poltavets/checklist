@@ -15,8 +15,8 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className="min-h-screen flex flex-col font-sans">
+      <html lang="en" className="dark">
+        <body className="min-h-screen flex flex-col font-sans bg-slate-900 text-slate-100">
           {children}
         </body>
       </html>
