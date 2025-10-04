@@ -1,7 +1,7 @@
 "use client";
 
 import { saveUserProgress } from "@/lib/saveProgress";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Footer from "../components/footer/Footer";
 import GoalA from "../components/main/GoalA";
 import Habbits from "../components/main/Habbits";
@@ -10,6 +10,7 @@ import MainWithoutAuth from "../components/withoutAuth/MainWithoutAuth";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { useAuth } from "@clerk/nextjs";
 import { fetchUserProgress } from "@/lib/fetchUserProgress";
+import CustomModal from "@/components/modal/modal";
 
 export default function ChecklistPage({ children }: { children: React.ReactNode }) {
   const [showSummary, setShowSummary] = useState(false);
@@ -41,6 +42,16 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
       });
 
     return `${formatDate(monday)} - ${formatDate(sunday)}`;
+  }, []);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Optionally check for unsaved changes here
+      e.preventDefault();
+      e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, []);
 
   useEffect(() => {
@@ -110,6 +121,10 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
 
   const personOnDuty = "John Doe";
 
+  //reset week and reset checkboxes modal state
+  const [resetModalOpen, setResetModalOpen] = useState(false);
+  const [newWeekModalOpen, setNewWeekModalOpen] = useState(false);
+
   return (
     <>
       <Header />
@@ -162,10 +177,91 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
                 dayGoalTexts,
               });
             }}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+            className="mt-4 px-4 py-2 mb-4 bg-blue-600 text-white rounded"
           >
             Save Progress
           </button>
+          <button
+            onClick={() => setResetModalOpen(true)}
+            className="mt-4 px-4 py-2 mb-4 bg-red-600 text-white rounded ml-2"
+          >
+            Reset
+          </button>
+          <button
+            onClick={() => setNewWeekModalOpen(true)}
+            className="mt-4 px-4 py-2 mb-4 bg-yellow-500 text-white rounded ml-2"
+          >
+            New Week
+          </button>
+          <CustomModal
+            open={newWeekModalOpen}
+            title="Start New Week?"
+            description="This will clear all checkboxes for the week, but keep your habit names and goals. Continue?"
+            confirmText="Yes, clear progress"
+            cancelText="Cancel"
+            onConfirm={async () => {
+              setNewWeekModalOpen(false);
+              // Reset only checkboxes
+              const newChecks = Object.fromEntries(
+                habbitIds.map(id => [id, Array(7).fill(false)])
+              );
+              setHabbitChecks(newChecks);
+              setGoalaWeekChecked(false);
+              setGoalaDayChecks(Array(7).fill(false));
+
+              // Save to database
+              const token = await getToken({ template: "supabase" });
+              if (!token || !userId) return;
+              await saveUserProgress({
+                token,
+                userId,
+                weekRange: getCurrentWeekRange(),
+                habbitIds,
+                habbitChecks: newChecks,
+                habbitNames, // keep names
+                goalaWeekChecked: false,
+                goalaDayChecks: Array(7).fill(false),
+                weekGoalText, // keep goals
+                dayGoalTexts, // keep goals
+              });
+            }}
+            onCancel={() => setNewWeekModalOpen(false)}
+          />
+          <CustomModal
+            open={resetModalOpen}
+            title="Reset Progress?"
+            description="Are you sure you want to clear all fields and reset your progress for this week?"
+            confirmText="Yes, reset"
+            cancelText="Cancel"
+            onConfirm={async () => {
+              setResetModalOpen(false);
+              // Reset all local state
+              setHabbitIds([0, 1, 2, 3]);
+              setHabbitNames(["", "", "", ""]);
+              setHabbitChecks({ 0: Array(7).fill(false), 1: Array(7).fill(false), 2: Array(7).fill(false), 3: Array(7).fill(false) });
+              setGoalaWeekChecked(false);
+              setGoalaDayChecks(Array(7).fill(false));
+              setWeekGoalText("");
+              setDayGoalTexts(Array(7).fill(""));
+
+              // Reset in database
+              const token = await getToken({ template: "supabase" });
+              if (!token || !userId) return;
+              await saveUserProgress({
+                token,
+                userId,
+                weekRange: getCurrentWeekRange(),
+                habbitIds: [0, 1, 2, 3],
+                habbitChecks: { 0: Array(7).fill(false), 1: Array(7).fill(false), 2: Array(7).fill(false), 3: Array(7).fill(false) },
+                habbitNames: ["", "", "", ""],
+                goalaWeekChecked: false,
+                goalaDayChecks: Array(7).fill(false),
+                weekGoalText: "",
+                dayGoalTexts: Array(7).fill(""),
+              });
+            }}
+            onCancel={() => setResetModalOpen(false)}
+          />
         </main>
       </SignedIn>
       <Footer
