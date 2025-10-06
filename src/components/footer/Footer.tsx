@@ -1,5 +1,6 @@
 "use client"
 
+import { buildTelegramMessage } from "@/lib/buildTelegramMessage";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 
@@ -9,12 +10,22 @@ export default function Footer({
     goalAPenalty,
     showSummary,
     onShowSummary,
+    weekGoalText,
+    dayGoalTexts,
+    goalaDayChecks,
+    habbitNames,
+    habbitChecks,
 }: {
     habbitsScore: string;
     habbitsPenalty: number;
     goalAPenalty: number;
     showSummary: boolean;
     onShowSummary: () => void;
+    weekGoalText: string;
+    dayGoalTexts: string[];
+    goalaDayChecks: boolean[];
+    habbitNames: string[];
+    habbitChecks: { [key: number]: boolean[] };
 }) {
     const [timeLeft, setTimeLeft] = useState('');
 
@@ -81,7 +92,23 @@ export default function Footer({
                             : "opacity-0 translate-y-2 pointer-events-none"
                             }`}
                     >
-                        <button className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25">
+                        <button
+                            className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
+                            onClick={async () => {
+                                const message = buildTelegramMessage({
+                                    weekGoalText,
+                                    dayGoalTexts,
+                                    goalaDayChecks,
+                                    habbitNames,
+                                    habbitChecks,
+                                });
+                                await fetch("/api/sendTelegram", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ message }),
+                                });
+                            }}
+                        >
                             Send the result
                         </button>
                         <button className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/25">

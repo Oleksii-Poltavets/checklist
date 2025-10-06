@@ -44,17 +44,17 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
     return `${formatDate(monday)} - ${formatDate(sunday)}`;
   }, []);
 
-  useEffect(() => {
-    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      // Only show popup if user is logged in (has userId)
-      if (userId) {
-        e.preventDefault();
-        e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
-      }
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [userId]);
+  // useEffect(() => {
+  //   const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+  //     // Only show popup if user is logged in (has userId)
+  //     if (userId) {
+  //       e.preventDefault();
+  //       e.returnValue = "You have unsaved changes. Are you sure you want to leave?";
+  //     }
+  //   };
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  //   return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  // }, [userId]);
 
   useEffect(() => {
     async function loadProgress() {
@@ -274,6 +274,11 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
         goalAPenalty={goalaPenalty}
         showSummary={showSummary}
         onShowSummary={() => setShowSummary(true)}
+        weekGoalText={weekGoalText}
+        dayGoalTexts={dayGoalTexts}
+        goalaDayChecks={goalaDayChecks}
+        habbitNames={habbitNames}
+        habbitChecks={habbitChecks}
       />
     </>
   );
