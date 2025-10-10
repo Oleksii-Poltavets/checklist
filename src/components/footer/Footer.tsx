@@ -95,18 +95,29 @@ export default function Footer({
                         <button
                             className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
                             onClick={async () => {
-                                const message = buildTelegramMessage({
-                                    weekGoalText,
-                                    dayGoalTexts,
-                                    goalaDayChecks,
-                                    habbitNames,
-                                    habbitChecks,
-                                });
-                                await fetch("/api/sendTelegram", {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ message }),
-                                });
+                                try {
+                                    const message = buildTelegramMessage({
+                                        weekGoalText,
+                                        dayGoalTexts,
+                                        goalaDayChecks,
+                                        habbitNames,
+                                        habbitChecks,
+                                    });
+                                    const response = await fetch("/api/sendTelegram", {
+                                        method: "POST",
+                                        headers: { "Content-Type": "application/json" },
+                                        body: JSON.stringify({ message }),
+                                    });
+                                    
+                                    if (response.ok) {
+                                        alert("✅ Message sent to Telegram successfully!");
+                                    } else {
+                                        alert("❌ Failed to send message to Telegram");
+                                    }
+                                } catch (error) {
+                                    console.error("Error sending to Telegram:", error);
+                                    alert("❌ Error sending message to Telegram");
+                                }
                             }}
                         >
                             Send the result
