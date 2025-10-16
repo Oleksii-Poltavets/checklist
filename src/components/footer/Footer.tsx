@@ -3,6 +3,7 @@
 import { buildTelegramMessage } from "@/lib/buildTelegramMessage";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 
 export default function Footer({
     habbitsScore,
@@ -28,6 +29,7 @@ export default function Footer({
     habbitChecks: { [key: number]: boolean[] };
 }) {
     const [timeLeft, setTimeLeft] = useState('');
+    const { user } = useUser();
 
     useEffect(() => {
         const updateTimer = () => {
@@ -96,19 +98,22 @@ export default function Footer({
                             className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
                             onClick={async () => {
                                 try {
-                                    const message = buildTelegramMessage({
-                                        weekGoalText,
-                                        dayGoalTexts,
-                                        goalaDayChecks,
-                                        habbitNames,
-                                        habbitChecks,
-                                    });
+                                    const userName = user?.fullName || user?.username || user?.id || "Unknown User";
+                                    const message =
+                                        `Звіт від: ${userName}\n` +
+                                        buildTelegramMessage({
+                                            weekGoalText,
+                                            dayGoalTexts,
+                                            goalaDayChecks,
+                                            habbitNames,
+                                            habbitChecks,
+                                        });
                                     const response = await fetch("/api/sendTelegram", {
                                         method: "POST",
                                         headers: { "Content-Type": "application/json" },
                                         body: JSON.stringify({ message }),
                                     });
-                                    
+
                                     if (response.ok) {
                                         alert("✅ Message sent to Telegram successfully!");
                                     } else {

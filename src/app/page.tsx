@@ -11,6 +11,7 @@ import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { useAuth } from "@clerk/nextjs";
 import { fetchUserProgress } from "@/lib/fetchUserProgress";
 import CustomModal from "@/components/modal/modal";
+import { useUser } from "@clerk/nextjs";
 
 export default function ChecklistPage({ children }: { children: React.ReactNode }) {
   const [showSummary, setShowSummary] = useState(false);
@@ -23,6 +24,7 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
   const [goalaDayChecks, setGoalaDayChecks] = useState(Array(7).fill(false));
   const [weekGoalText, setWeekGoalText] = useState("");
   const [dayGoalTexts, setDayGoalTexts] = useState(Array(7).fill(""));
+  const { user } = useUser();
 
   const { getToken, userId } = useAuth();
 
@@ -183,6 +185,61 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
               className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
             >
               Save Progress
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  const userName = user?.fullName || user?.username || user?.id || "Unknown User";
+                  const todayIdx = new Date().getDay();
+                  const days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+                  const weekDayIdx = (todayIdx + 6) % 7;
+
+                  let msg = `Звіт від: ${userName}\n`;
+                  msg += `Ціль тижня: ${weekGoalText}\nЦіль а:\n`;
+
+                  for (let i = 0; i < 7; i++) {
+                    let mark = "";
+                    if (i < weekDayIdx) mark = goalaDayChecks[i] ? "+" : "-";
+                    if (i === weekDayIdx) mark = goalaDayChecks[i] ? "+" : "-";
+                    if (i > weekDayIdx) mark = "";
+                    msg += `${days[i]}: ${dayGoalTexts[i] || ""} ${mark}\n`;
+                  }
+
+                  msg += `\nЧек-лист:\n`;
+
+                  habbitNames.forEach((name, idx) => {
+                    if (!name) return;
+                    const checks = habbitChecks[idx] || [];
+                    const marks = checks.map((c, i) => {
+                      if (i < weekDayIdx) return c ? "+" : "-";
+                      if (i === weekDayIdx) return c ? "+" : "-";
+                      return "";
+                    }).join(" ");
+                    msg += `${idx + 1})${name}: ${marks}\n`;
+                  });
+
+                  const response = await fetch("/api/sendTelegram", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: msg }),
+                  });
+
+                  if (response.ok) {
+                    alert("✅ Message sent to Telegram successfully!");
+                  } else {
+                    alert("❌ Failed to send message to Telegram");
+                  }
+                } catch (error) {
+                  console.error("Error sending to Telegram:", error);
+                  alert("❌ Error sending message to Telegram");
+                }
+              }}
+              className="px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg flex items-center gap-2"
+              title="Send to Telegram"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M22.5 2.5L2 10.5c-.7.3-.7 1.3 0 1.6l4.7 1.5 2.1 6.3c.2.6.9.8 1.4.4l3.1-2.7 4.7 3.4c.6.4 1.4.1 1.6-.6l3.2-16.2c.2-.7-.5-1.3-1.2-1.1z" />
+              </svg>
             </button>
             <button
               onClick={() => setNewWeekModalOpen(true)}
