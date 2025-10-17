@@ -63,23 +63,23 @@ export default function Footer({
         return () => clearInterval(interval);
     }, []);
     return (
-        <footer className="w-full h-16 bg-slate-800 border-t border-slate-700 shadow-lg fixed bottom-0 left-0 z-20 md:static md:shadow-none">
+        <footer className="w-full bg-slate-800 border-t border-slate-700 shadow-lg">
             <SignedIn>
-                <div className="container mx-auto h-full flex items-center justify-between px-6">
-                    <div>
+                <div className="container mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 sm:px-6 gap-3 sm:gap-0">
+                    <div className="flex-shrink-0">
                         {!showSummary ? (
                             <button
                                 onClick={onShowSummary}
-                                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
+                                className="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 text-sm sm:text-base"
                             >
                                 Week summary
                             </button>
                         ) : (
                             <div className="flex flex-col gap-1 transition-all duration-300">
-                                <span className="text-slate-100 font-semibold">
+                                <span className="text-slate-100 font-semibold text-sm sm:text-base">
                                     Habbits score: <span className="text-emerald-400">{habbitsScore}</span>
                                 </span>
-                                <span className="text-slate-100 font-semibold">
+                                <span className="text-slate-100 font-semibold text-sm sm:text-base">
                                     Penalty total:{" "}
                                     <span className="text-red-400">
                                         {goalAPenalty + habbitsPenalty}
@@ -89,13 +89,13 @@ export default function Footer({
                         )}
                     </div>
                     <nav
-                        className={`flex gap-4 transition-all duration-300 ${showSummary
+                        className={`grid grid-cols-2 sm:flex gap-2 sm:gap-4 transition-all duration-300 ${showSummary
                             ? "opacity-100 translate-y-0 pointer-events-auto"
                             : "opacity-0 translate-y-2 pointer-events-none"
                             }`}
                     >
                         <button
-                            className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
+                            className="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 text-sm sm:text-base whitespace-nowrap"
                             onClick={async () => {
                                 try {
                                     const userName = user?.fullName || user?.username || user?.id || "Unknown User";
@@ -125,9 +125,9 @@ export default function Footer({
                                 }
                             }}
                         >
-                            Send the result
+                            Send result
                         </button>
-                        <button className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/25">
+                        <button className="px-3 py-2 sm:px-4 sm:py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-red-500/25 text-sm sm:text-base whitespace-nowrap">
                             Pay penalty
                         </button>
                     </nav>
@@ -135,8 +135,8 @@ export default function Footer({
                 </div>
             </SignedIn>
             <SignedOut>
-                <div className="container mx-auto h-full flex items-center justify-center px-6">
-                    <div className="text-xl md:text-2xl font-semibold text-emerald-400">
+                <div className="container mx-auto h-16 flex items-center justify-center px-4 sm:px-6">
+                    <div className="text-lg sm:text-xl md:text-2xl font-semibold text-emerald-400 text-center">
                         ⏳ Next week starts in: <span className="ml-2 text-slate-100">{timeLeft}</span>
                     </div>
                 </div>

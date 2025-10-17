@@ -27,30 +27,30 @@ export default function NavMenu() {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <nav className="ml-auto">
+        <nav className="ml-auto flex-shrink-0">
             {/* Desktop menu */}
-            <ul className="hidden md:flex gap-6 items-center">
+            <ul className="hidden lg:flex gap-3 xl:gap-6 items-center">
                 <SignedOut>
                     <>
                         <li>
                             <SignInButton mode="modal">
-                                <div className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                                <div className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer text-sm lg:text-base">
                                     {/* User icon */}
-                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
                                     </svg>
-                                    Login
+                                    <span className="hidden xl:inline">Login</span>
                                 </div>
                             </SignInButton>
                         </li>
                         <li>
                             <SignUpButton mode="modal">
-                                <div className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer">
+                                <div className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer text-sm lg:text-base">
                                     {/* Pencil icon */}
-                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9a1 1 0 00-.263.465l-1.414 5.657a1 1 0 001.213 1.213l5.657-1.414a1 1 0 00.465-.263l9.9-9.9a2 2 0 000-2.828l-2.83-2.83zM15 7l-2-2 2-2 2 2-2 2z" />
                                     </svg>
-                                    Register
+                                    <span className="hidden xl:inline">Register</span>
                                 </div>
                             </SignUpButton>
                         </li>
@@ -58,23 +58,22 @@ export default function NavMenu() {
                 </SignedOut>
                 <SignedIn>
                     <>
-                        <li>
+                        <li className="hidden lg:block">
                             <a
                                 href="https://meet.google.com/new"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center text-slate-300 hover:text-emerald-400 transition-colors"
+                                className="inline-flex items-center text-slate-300 hover:text-emerald-400 transition-colors text-sm"
                             >
                                 <svg
-                                    className="w-5 h-5 mr-2 text-emerald-500"
+                                    className="w-4 h-4 mr-1 text-emerald-500"
                                     fill="currentColor"
                                     viewBox="0 0 20 20"
                                     xmlns="http://www.w3.org/2000/svg"
                                 >
                                     <path d="M15 8l4-4v12l-4-4v4H3V4h12v4z" />
                                 </svg>
-
-                                Start a Google Meet
+                                <span className="hidden xl:inline">Start </span>Meet
                             </a>
                         </li>
                         <li>
@@ -85,56 +84,56 @@ export default function NavMenu() {
             </ul>
             {/* Mobile menu button */}
             <button
-                className="md:hidden ml-2 p-2 rounded hover:bg-slate-700 transition-colors"
+                className="lg:hidden ml-1 p-1.5 sm:p-2 rounded hover:bg-slate-700 transition-colors"
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label="Open menu"
             >
-                <svg className="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-slate-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
             {/* Mobile dropdown */}
             {menuOpen && (
-                <ul className="absolute right-6 top-16 bg-slate-800 border border-slate-700 shadow-xl rounded-md flex flex-col gap-2 p-4 md:hidden z-50">
+                <ul className="absolute right-2 sm:right-6 top-16 bg-slate-800 border border-slate-700 shadow-xl rounded-md flex flex-col gap-2 p-3 sm:p-4 lg:hidden z-50 min-w-[180px] w-auto max-w-[calc(100vw-1rem)]">
                     <SignedOut>
                         <>
                             <li>
-                                <a href="/login" className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors">
-                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
-                                    </svg>
-                                    Login
-                                </a>
+                                <SignInButton mode="modal">
+                                    <div className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer py-1 text-sm">
+                                        <svg className="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 1114 0H3z" />
+                                        </svg>
+                                        Login
+                                    </div>
+                                </SignInButton>
                             </li>
                             <li>
-                                <a href="/register" className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors">
-                                    <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9a1 1 0 00-.263.465l-1.414 5.657a1 1 0 001.213 1.213l5.657-1.414a1 1 0 00.465-.263l9.9-9.9a2 2 0 000-2.828l-2.83-2.83zM15 7l-2-2 2-2 2 2-2 2z" />
-                                    </svg>
-                                    Register
-                                </a>
+                                <SignUpButton mode="modal">
+                                    <div className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors cursor-pointer py-1 text-sm">
+                                        <svg className="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M17.414 2.586a2 2 0 00-2.828 0l-9.9 9.9a1 1 0 00-.263.465l-1.414 5.657a1 1 0 001.213 1.213l5.657-1.414a1 1 0 00.465-.263l9.9-9.9a2 2 0 000-2.828l-2.83-2.83zM15 7l-2-2 2-2 2 2-2 2z" />
+                                        </svg>
+                                        Register
+                                    </div>
+                                </SignUpButton>
                             </li>
                         </>
                     </SignedOut>
                     <SignedIn>
                         <>
                             <li>
-                                <a href="/meet/new" className="flex items-center gap-1 text-slate-300 hover:text-emerald-400 transition-colors">
-                                    <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="currentColor" />
-                                        <path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" />
+                                <a href="https://meet.google.com/new" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-slate-300 hover:text-emerald-400 transition-colors py-1 text-sm">
+                                    <svg className="w-4 h-4 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M15 8l4-4v12l-4-4v4H3V4h12v4z" />
                                     </svg>
-                                    Create a new meet
+                                    Start Google Meet
                                 </a>
                             </li>
-                            <li>
-                                <button className="flex items-center gap-1 text-slate-300 hover:text-red-400 transition-colors">
-                                    <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                        <path d="M17 16l4-4m0 0l-4-4m4 4H7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                        <path d="M3 21V3a2 2 0 012-2h7" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
-                                    </svg>
-                                    Logout
-                                </button>
+                            <li className="pt-2 border-t border-slate-700">
+                                <div className="flex items-center gap-2">
+                                    <UserButton />
+                                    <span className="text-slate-300 text-sm">Account</span>
+                                </div>
                             </li>
                         </>
                     </SignedIn>

@@ -136,14 +136,14 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
         <MainWithoutAuth />
       </SignedOut>
       <SignedIn>
-        <main className="flex-1 w-full flex flex-col items-center justify-start p-6 pb-0 bg-slate-900 text-slate-100">
-          <h1 className="text-3xl font-bold mb-2 text-center">
+        <main className="flex-1 w-full flex flex-col items-center justify-start p-3 sm:p-4 lg:p-6 pb-0 bg-slate-900 text-slate-100">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 text-center">
             On duty: <span className="text-emerald-400">{personOnDuty}</span>
           </h1>
-          <h2 className="text-xl font-semibold mb-6 text-slate-300">
+          <h2 className="text-base sm:text-lg lg:text-xl font-semibold mb-4 sm:mb-5 lg:mb-6 text-slate-300 text-center">
             Week: <span className="text-slate-100">{getCurrentWeekRange()}</span>
           </h2>
-          <div className="w-full flex flex-col lg:flex-row gap-8 items-start justify-center">
+          <div className="w-full flex flex-col lg:flex-row gap-8 items-center lg:items-start justify-center">
             <GoalA
               weekChecked={goalaWeekChecked}
               setWeekChecked={setGoalaWeekChecked}
@@ -164,7 +164,7 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
             />
           </div>
           {children}
-          <div className="flex gap-3 mt-6 mb-4">
+          <div className="grid grid-cols-2 sm:flex gap-2 sm:gap-3 mt-6 mb-4 w-full max-w-2xl">
             <button
               onClick={async () => {
                 const token = await getToken({ template: "supabase" });
@@ -182,7 +182,7 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
                   dayGoalTexts,
                 });
               }}
-              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25"
+              className="px-3 py-2 sm:px-6 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 text-sm sm:text-base whitespace-nowrap"
             >
               Save Progress
             </button>
@@ -234,22 +234,23 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
                   alert("❌ Error sending message to Telegram");
                 }
               }}
-              className="px-6 py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg flex items-center gap-2"
+              className="px-3 py-2 sm:px-6 sm:py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base transition-all duration-200 transform hover:scale-105 active:scale-95 shadow-lg"
               title="Send to Telegram"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" className="sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M22.5 2.5L2 10.5c-.7.3-.7 1.3 0 1.6l4.7 1.5 2.1 6.3c.2.6.9.8 1.4.4l3.1-2.7 4.7 3.4c.6.4 1.4.1 1.6-.6l3.2-16.2c.2-.7-.5-1.3-1.2-1.1z" />
               </svg>
+              <span className="hidden xs:inline sm:inline">Send</span>
             </button>
             <button
               onClick={() => setNewWeekModalOpen(true)}
-              className="px-6 py-2.5 bg-slate-600 hover:bg-slate-700 active:bg-slate-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-slate-500/25"
+              className="px-3 py-2 sm:px-6 sm:py-2.5 bg-slate-600 hover:bg-slate-700 active:bg-slate-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-slate-500/25 text-sm sm:text-base whitespace-nowrap"
             >
               New Week
             </button>
             <button
               onClick={() => setResetModalOpen(true)}
-              className="px-6 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-red-500/25"
+              className="px-3 py-2 sm:px-6 sm:py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-red-500/25 text-sm sm:text-base whitespace-nowrap"
             >
               Reset
             </button>
