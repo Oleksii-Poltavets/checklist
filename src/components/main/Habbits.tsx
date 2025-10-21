@@ -125,26 +125,26 @@ export default function Habbits({
             {habbitIds.map((id, idx) => (
                 <div
                     key={id}
-                    className="flex flex-col gap-2 sm:gap-3 bg-slate-900 border border-slate-600 rounded-lg p-3 sm:p-4 mb-3"
+                    className="flex flex-col lg:flex-row lg:items-center gap-2 sm:gap-3 lg:gap-4 bg-slate-900 border border-slate-600 rounded-lg p-3 sm:p-4 lg:p-3 mb-3"
                 >
                     {/* Habit name input */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 lg:flex-shrink-0">
                         <input
                             type="text"
                             placeholder={`Habbit ${idx + 1}`}
                             value={habbitNames[idx] || ""}
                             onChange={e => handleNameChange(idx, e.target.value)}
-                            className="flex-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-md border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            className="flex-1 lg:w-56 px-2 sm:px-3 lg:px-2 py-1.5 sm:py-2 lg:py-1 rounded-md border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 text-sm sm:text-base lg:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                             disabled={!editMode}
                         />
                         {editMode && (
                             <button
                                 type="button"
                                 onClick={() => handleDelete(id)}
-                                className="p-1.5 text-slate-400 hover:text-red-400 transition cursor-pointer"
+                                className="p-1.5 lg:p-1 text-slate-400 hover:text-red-400 transition cursor-pointer"
                                 aria-label="Delete habbit"
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-4 h-4 lg:w-3.5 lg:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                             </button>
@@ -152,22 +152,22 @@ export default function Habbits({
                     </div>
                     
                     {/* Days checkboxes and score */}
-                    <div className="flex items-center justify-between gap-2">
-                        <div className="flex gap-1.5 sm:gap-2 flex-1 justify-between max-w-[280px]">
+                    <div className="flex items-center justify-between gap-2 lg:flex-1">
+                        <div className="flex gap-1.5 sm:gap-2 lg:gap-0.5 flex-1 justify-between max-w-[280px] lg:max-w-none">
                             {days.map((day, dayIdx) => (
                                 <label key={day.abbr} className="flex flex-col items-center cursor-pointer">
-                                    <span className="text-[10px] sm:text-xs text-slate-400 mb-1 font-medium">{day.abbr}</span>
+                                    <span className="text-[10px] sm:text-xs lg:text-[10px] text-slate-400 mb-1 font-medium">{day.abbr}</span>
                                     <input
                                         type="checkbox"
-                                        className="w-4 h-4 sm:w-5 sm:h-5 accent-blue-500 rounded focus:ring-2 focus:ring-blue-500"
+                                        className="w-4 h-4 sm:w-5 sm:h-5 lg:w-4 lg:h-4 accent-blue-500 rounded focus:ring-2 focus:ring-blue-500"
                                         checked={checks[id]?.[dayIdx] || false}
                                         onChange={() => handleCheck(id, dayIdx)}
                                     />
                                 </label>
                             ))}
                         </div>
-                        <div className="flex items-center text-xs sm:text-sm font-medium text-slate-300 ml-2">
-                            <span className="text-emerald-400 font-bold text-sm sm:text-base">
+                        <div className="flex items-center text-xs sm:text-sm lg:text-xs font-medium text-slate-300 ml-2 lg:ml-3">
+                            <span className="text-emerald-400 font-bold text-sm sm:text-base lg:text-sm">
                                 {checks[id]?.filter(Boolean).length || 0}
                             </span>
                             <span className="text-slate-400 mx-1">/</span>

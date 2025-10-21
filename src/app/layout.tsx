@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "../components/header/Header";
 import { ClerkProvider } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 
 export const metadata: Metadata = {
   title: "Checklist App",
@@ -14,7 +14,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider 
+      appearance={{
+        baseTheme: dark,
+        variables: {
+          colorPrimary: "#10b981", // emerald-500 to match your theme
+          colorBackground: "#1e293b", // slate-800
+          colorInputBackground: "#334155", // slate-700
+          colorInputText: "#f1f5f9", // slate-100
+          colorText: "#f1f5f9", // slate-100
+          colorTextSecondary: "#94a3b8", // slate-400
+          colorNeutral: "#64748b", // slate-500
+          colorDanger: "#ef4444", // red-500
+          colorSuccess: "#10b981", // emerald-500
+          colorWarning: "#f59e0b", // amber-500
+          borderRadius: "0.5rem", // rounded-lg to match your buttons
+        },
+        elements: {
+          card: "bg-slate-800 border border-slate-700 shadow-2xl",
+          modalContent: "bg-slate-800",
+          modalCloseButton: "text-slate-400 hover:text-slate-100",
+          headerTitle: "text-slate-100",
+          headerSubtitle: "text-slate-300",
+          socialButtonsBlockButton: "bg-slate-700 border-slate-600 text-slate-100 hover:bg-slate-600",
+          formButtonPrimary: "bg-emerald-600 hover:bg-emerald-700 text-white",
+          footerActionLink: "text-emerald-400 hover:text-emerald-300",
+          identityPreviewText: "text-slate-100",
+          identityPreviewEditButtonIcon: "text-slate-400",
+        }
+      }}
+    >
       <html lang="en" className="dark">
         <body className="min-h-screen flex flex-col font-sans bg-slate-900 text-slate-100">
           {children}

@@ -1,7 +1,7 @@
 "use client";
 
 import { saveUserProgress } from "@/lib/saveProgress";
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Footer from "../components/footer/Footer";
 import GoalA from "../components/main/GoalA";
 import Habbits from "../components/main/Habbits";
@@ -12,8 +12,10 @@ import { useAuth } from "@clerk/nextjs";
 import { fetchUserProgress } from "@/lib/fetchUserProgress";
 import CustomModal from "@/components/modal/modal";
 import { useUser } from "@clerk/nextjs";
+import LoadingScreen from "@/components/ui/LoadingScreen";
+import Spinner from "@/components/ui/Spinner";
 
-export default function ChecklistPage({ children }: { children: React.ReactNode }) {
+export default function ChecklistPage() {
   const [showSummary, setShowSummary] = useState(false);
   const [habbitIds, setHabbitIds] = useState<number[]>([0, 1, 2, 3]);
   const [habbitNames, setHabbitNames] = useState<string[]>(["", "", "", ""]);
@@ -24,9 +26,11 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
   const [goalaDayChecks, setGoalaDayChecks] = useState(Array(7).fill(false));
   const [weekGoalText, setWeekGoalText] = useState("");
   const [dayGoalTexts, setDayGoalTexts] = useState(Array(7).fill(""));
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { user } = useUser();
 
-  const { getToken, userId } = useAuth();
+  const { getToken, userId, isLoaded } = useAuth();
 
   const getCurrentWeekRange = useCallback((): string => {
     const today = new Date();
@@ -60,9 +64,13 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
 
   useEffect(() => {
     async function loadProgress() {
-      const token = await getToken({ template: "supabase" });
-      if (!token || !userId) return;
-      let progress = await fetchUserProgress(token, userId, getCurrentWeekRange());
+      if (!isLoaded || !userId) return;
+      
+      setIsLoading(true);
+      try {
+        const token = await getToken({ template: "supabase" });
+        if (!token || !userId) return;
+        let progress = await fetchUserProgress(token, userId, getCurrentWeekRange());
 
       if (Array.isArray(progress)) progress = progress[0];
 
@@ -102,9 +110,14 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
             : Array(7).fill("")
         );
       }
+      } catch (error) {
+        console.error("Error loading progress:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
     loadProgress();
-  }, [userId, getCurrentWeekRange()]);
+  }, [userId, isLoaded, getCurrentWeekRange]);
 
   // Score and penalty calculations
   const habbitsScore = (() => {
@@ -128,6 +141,11 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
   //reset week and reset checkboxes modal state
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [newWeekModalOpen, setNewWeekModalOpen] = useState(false);
+
+  // Show loading screen if auth is not loaded or content is loading
+  if (!isLoaded || isLoading) {
+    return <LoadingScreen message={!isLoaded ? "Authenticating..." : "Loading your progress..."} />;
+  }
 
   return (
     <>
@@ -163,28 +181,43 @@ export default function ChecklistPage({ children }: { children: React.ReactNode 
               setChecks={setHabbitChecks}
             />
           </div>
-          {children}
-          <div className="grid grid-cols-2 sm:flex gap-2 sm:gap-3 mt-6 mb-4 w-full max-w-2xl">
+          <div className="grid grid-cols-2 sm:flex sm:justify-center gap-2 sm:gap-3 mt-6 mb-4 w-full max-w-2xl">
             <button
               onClick={async () => {
-                const token = await getToken({ template: "supabase" });
-                if (!token || !userId) return;
-                await saveUserProgress({
-                  token,
-                  userId,
-                  weekRange: getCurrentWeekRange(),
-                  habbitIds,
-                  habbitChecks,
-                  habbitNames,
-                  goalaWeekChecked,
-                  goalaDayChecks,
-                  weekGoalText,
-                  dayGoalTexts,
-                });
+                if (isSaving) return;
+                setIsSaving(true);
+                try {
+                  const token = await getToken({ template: "supabase" });
+                  if (!token || !userId) return;
+                  await saveUserProgress({
+                    token,
+                    userId,
+                    weekRange: getCurrentWeekRange(),
+                    habbitIds,
+                    habbitChecks,
+                    habbitNames,
+                    goalaWeekChecked,
+                    goalaDayChecks,
+                    weekGoalText,
+                    dayGoalTexts,
+                  });
+                } catch (error) {
+                  console.error("Error saving progress:", error);
+                } finally {
+                  setIsSaving(false);
+                }
               }}
-              className="px-3 py-2 sm:px-6 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 text-sm sm:text-base whitespace-nowrap"
+              disabled={isSaving}
+              className="px-3 py-2 sm:px-6 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 disabled:bg-emerald-500 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all duration-200 cursor-pointer transform hover:scale-105 active:scale-95 disabled:transform-none shadow-lg hover:shadow-xl hover:shadow-emerald-500/25 text-sm sm:text-base whitespace-nowrap flex items-center justify-center gap-2"
             >
-              Save Progress
+              {isSaving ? (
+                <>
+                  <Spinner size="sm" color="white" />
+                  <span>Saving...</span>
+                </>
+              ) : (
+                "Save Progress"
+              )}
             </button>
             <button
               onClick={async () => {

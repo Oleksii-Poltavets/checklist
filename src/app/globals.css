@@ -51,3 +51,68 @@ body {
     "Helvetica Neue", Arial, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Clerk Modal Dark Theme Overrides */
+.cl-modal {
+  --cl-color-primary: #10b981 !important;
+  --cl-color-background: #1e293b !important;
+  --cl-color-text: #f1f5f9 !important;
+  --cl-color-text-secondary: #94a3b8 !important;
+}
+
+.cl-modalContent {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+.cl-card {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.cl-headerTitle,
+.cl-headerSubtitle,
+.cl-identityPreviewText {
+  color: #f1f5f9 !important;
+}
+
+.cl-formFieldInput,
+.cl-input {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.cl-formFieldInput:focus,
+.cl-input:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2) !important;
+}
+
+.cl-formButtonPrimary {
+  background-color: #10b981 !important;
+}
+
+.cl-formButtonPrimary:hover {
+  background-color: #059669 !important;
+}
+
+.cl-socialButtonsBlockButton {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
+.cl-socialButtonsBlockButton:hover {
+  background-color: #475569 !important;
+}
+
+.cl-footerActionLink {
+  color: #10b981 !important;
+}
+
+.cl-footerActionLink:hover {
+  color: #34d399 !important;
+}
