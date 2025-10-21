@@ -45,6 +45,21 @@ export default function RootLayout({
       }}
     >
       <html lang="en" className="dark">
+        <head>
+          {/* PWA manifest + theme color */}
+          <link rel="manifest" href="/manifest.webmanifest" />
+          <meta name="theme-color" content="#0f172a" />
+
+          {/* iOS support (uses apple-touch-icon and meta tags) */}
+          <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          <meta name="apple-mobile-web-app-title" content="Checklist" />
+
+          {/* Windows tile (optional) */}
+          <meta name="msapplication-TileColor" content="#0f172a" />
+          <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+        </head>
         <body className="min-h-screen flex flex-col font-sans bg-slate-900 text-slate-100">
           {children}
         </body>
